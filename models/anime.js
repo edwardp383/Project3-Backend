@@ -2,14 +2,11 @@ const mongoose = require('mongoose');
 
 
 const animeSchema = new mongoose.Schema({
-  name: String,
-  photo: String,
-  description: String,
+  title: String,
+  img: String,
+  synopsis: String,
   episodes: Array,
-  episodesWatched:[{
-    type: Boolean,
-    default: false
-  }],
+  episodesWatched: Array,
   notes: String
 });
 

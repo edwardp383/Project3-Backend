@@ -5,26 +5,36 @@ const User = require('../models/users.js');
 const bcrypt = require('bcryptjs');
 
 router.post('/', async (req, res, next) => {
+	console.log(req.body);
+	const animeDbEntry = {};
+	animeDbEntry.title = req.body.title;
+	animeDbEntry.img = req.body.img;
+	animeDbEntry.synopsis = req.body.synopsis;
+	animeDbEntry.episodes = req.body.episodes;
+	animeDbEntry.episodesWatched = req.body.episodesWatched;
 	try {
-		const createdAnime = await Anime.create(req.body);
-		const foundUser = await User.findById(req.session._id)
-		// console.log('found user ========> ' + foundUser);
+		const createdAnime = await Anime.create(animeDbEntry);
+		const foundUser = await User.findById(req.body.userId)
+		console.log('found user ========> ' + foundUser);
 		foundUser.anime.push(createdAnime)
+		foundUser.save((err, savedUser) => {
+			console.log(savedUser);
+		})
 		res.json({
           	status: 200,
-          	data: createdAnime
+          	data: 'Anime Saved'
         });
 	} catch (err){
 		next(err)
 	}
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/list/:id', async (req, res, next) => {
 	try{
-		const foundUser = await User.findById(req.session._id).populate('anime')
+		const foundAnime = await User.findById(req.params.id).populate('anime')
 		res.json({
           	status: 200,
-          	data: foundUser
+          	data: foundAnime.anime
         });
 	} catch {
 		next(err)
@@ -33,7 +43,7 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
 	try{		
-		const foundAnime = await Anime.findById(req.params.id).populate('episodes')
+		const foundAnime = await Anime.findById(req.params.id)
 		res.json({
           	status: 200,
           	data: foundAnime

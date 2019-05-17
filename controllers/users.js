@@ -20,7 +20,7 @@ router.post('/', async (req, res, next) => {
 			req.session._id = createdUser._id;
 			res.json({
           		status: 200,
-          		data: createdUser
+          		data: 'register successful'
         	})
 			console.log(createdUser);
 			req.session.message = "Account Created. Thank you!"
@@ -75,27 +75,28 @@ router.put('/:id', async (req, res ) => {
 });
 
 router.post('/login', async (req, res, next) => {
-  try {
-    const foundUser = await User.findOne({username: req.body.username});
-    console.log(foundUser);
-    if(foundUser){
-      if(bcrypt.compareSync(req.body.password, foundUser.password) === true){
-        req.session._id = foundUser._id;
-        res.json({
-			status: 200,
-          	data: foundUser
-		})
-      } else {
-        req.session.message = "Username or password is incorrect";
+  	try {
+    	const foundUser = await User.findOne({username: req.body.username});
+    	if(foundUser){
+      		if(bcrypt.compareSync(req.body.password, foundUser.password) === true){
+	        	res.json({
+				status: 200,
+	          	data: foundUser._id
+			})
+      		} else {
+		        res.json({
+		        	data: "Username or password is incorrect"
+		        });
         // res.send('err pass')
-      }
-    } else {
-      req.session.message = 'Username or Password is incorrect';
-      // res.send('err not found')
-    }
-  } catch(err){
-    next(err);
-  }	
+      		}
+    	} else {
+	      	res.json({
+	        	data: "Username or password is incorrect"
+	        });
+    	}	
+  	} catch(err){
+    	next(err);
+  	}	
 });
 
 // PUT /user/:id -- edits information on the user's account
