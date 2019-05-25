@@ -58,7 +58,7 @@ router.put('/:id', async (req, res, next) => {
 		const updatedAnime = await Anime.findByIdAndUpdate(req.params.id, req.body, {new: true});
 		res.json({
           	status: 200,
-          	data: updatedAnime
+          	data: "Anime Updated"
         });
 	} catch (err) {
 		next(err)
@@ -68,7 +68,10 @@ router.put('/:id', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
 	try {
 		const deletedAnime = await Anime.findByIdAndRemove(req.params.id)
-		// res.send('good')
+		res.json({
+          	status: 200,
+          	data: "Anime Deleted"
+        });
 	} catch (err) {
 		next(err)
 	}
